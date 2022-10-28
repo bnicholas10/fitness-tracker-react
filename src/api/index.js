@@ -14,8 +14,8 @@ export const fetchRoutines = async (token) => {
     });
     const info = await response.json();
 
-    console.log("INFO: ", info);
-    return;
+    // console.log("INFO: ", info);
+    return info;
   } catch (error) {
     console.error(error);
   }

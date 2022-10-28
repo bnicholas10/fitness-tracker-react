@@ -32,10 +32,7 @@ function App() {
       <Navbar token={token} setToken={setToken} />
       <Routes>
         <Route path={"/"} element={<Home />} />
-        <Route
-          path={"/routines"}
-          element={<Routines routines={routines} setRoutines={setRoutines} />}
-        />
+        <Route path={"/routines"} element={<Routines routines={routines} />} />
         <Route path={"/activities"} element={<Home />} />
         <Route path={"/account/login"} element={<Home />} />
         <Route path={"/account/register"} element={<Home />} />
