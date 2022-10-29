@@ -1,0 +1,36 @@
+#activitiesMain {
+    display: flex;
+    flex-direction: column;
+    margin-left: 25vw;
+    /* background-color: black; */
+    height: 94.6vh;
+    width: 50vw;
+  }
+  
+  #activitiesMain h1 {
+    font-family: "Nunito Sans", sans-serif;
+    align-self: center;
+    padding: 20px;
+  }
+  
+  #activitiesWrapper {
+    background-color: salmon;
+    height: 80vh;
+    box-shadow: 0px 15px 30px black;
+    border-radius: 10px;
+    padding: 10px;
+    overflow-y: auto;
+    -ms-overflow-style: none; /* IE and Edge */
+    scrollbar-width: none; /* Firefox */
+  }
+  
+  #activitiesWrapper::-webkit-scrollbar {
+    display: none; /* Chrome, Safar, Opera */
+  }
+  
+  .card {
+    background-color: white;
+    margin-bottom: 10px;
+    padding: 8px;
+    padding-left: 35px;
+  }

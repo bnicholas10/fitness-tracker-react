@@ -1,0 +1,39 @@
+#registrationField {
+    display: flex;
+    flex-direction: column;
+    align-items: center;
+  }
+  
+  #registrationField h1 {
+    font-family: "Roboto", sans-serif;
+  }
+  
+  #registrationField input {
+    display: block;
+    margin-bottom: 10px;
+    width: 280px;
+    height: 40px;
+    padding: 5px;
+  }
+  
+  #registrationField button {
+    width: 293px;
+    height: 30px;
+    font-family: "Roboto", sans-serif;
+  }
+  
+  #registrationField a {
+    color: black;
+    display: block;
+    margin: 10px;
+    position: relative;
+    left: 100px;
+  }
+  
+  #registrationField a:hover {
+    color: navy;
+  }
+  
+  #registrationField p {
+    color: red;
+  }
