@@ -21,7 +21,6 @@ export const fetchRoutines = async (token) => {
   }
 };
 
-
 export const fetchActivities = async (token) => {
   try {
     const url = `${BASE_URL}/activities`;
@@ -52,11 +51,11 @@ export const registerUser = async (username, password) => {
       },
       body: JSON.stringify({
         username,
-        password
+        password,
       }),
     });
     const result = await response.json();
-    console.log("RESULT: ", result)
+    // console.log("RESULT: ", result)
     return result;
   } catch (error) {
     console.error(error);
@@ -72,11 +71,52 @@ export const loginUser = async (username, password) => {
       },
       body: JSON.stringify({
         username,
-        password
+        password,
       }),
     });
     const result = await response.json();
     return result;
+  } catch (error) {
+    console.error(error);
+  }
+};
+
+export const createActivity = async (token, name, description) => {
+  try {
+    const response = await fetch(`${BASE_URL}/activities`, {
+      method: "POST",
+      headers: {
+        "Content-Type": "application/json",
+        Authorization: `Bearer ${token}`,
+      },
+      body: JSON.stringify({
+        name,
+        description,
+      }),
+    });
+    const info = await response.json();
+    return info;
+  } catch (error) {
+    console.error(error);
+  }
+};
+
+export const createRoutine = async (token, name, goal, isPublic) => {
+  try {
+    const response = await fetch(`${BASE_URL}/routines`, {
+      method: "POST",
+      headers: {
+        "Content-Type": "application/json",
+        Authorization: `Bearer ${token}`,
+      },
+      body: JSON.stringify({
+        name,
+        goal,
+        isPublic,
+      }),
+    });
+    const info = await response.json();
+    return info;
   } catch (error) {
     console.error(error);
   }

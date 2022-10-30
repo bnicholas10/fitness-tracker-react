@@ -1,8 +1,7 @@
 import "./Home.css";
 
 const Home = (props) => {
-  const {user} = props
-  console.log("USER: ", user)
+  const {user} = props  
   return (
     <div id="homeContent">
       <h1>FitnessTrac.kr Home</h1>

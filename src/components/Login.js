@@ -13,7 +13,7 @@ const Login = (props) => {
   const handleSubmit = async (event) => {
     event.preventDefault();
     const result = await loginUser(username, password);
-    console.log(result);
+    // console.log(result);
     if (result.error) {
       setError(result.error);
     } else {

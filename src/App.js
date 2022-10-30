@@ -3,17 +3,18 @@ import { Route, Routes } from "react-router-dom";
 import Navbar from "./components/Navbar";
 import Home from "./components/Home";
 import Routines from "./components/Routines";
-import Routine from "./components/Routine"
+import Routine from "./components/Routine";
 import { fetchRoutines, fetchActivities } from "./api";
 import Activities from "./components/Activities";
 import Login from "./components/Login";
 import Register from "./components/Register";
+import MyRoutines from "./components/MyRoutines";
 
 function App() {
   const [token, setToken] = useState("");
   const [user, setUser] = useState(null);
   const [routines, setRoutines] = useState([]);
-  const [activities, setActivities] = useState([])
+  const [activities, setActivities] = useState([]);
 
   const checkToken = () => {
     if (token === "" && localStorage.getItem("token")) {
@@ -40,14 +41,44 @@ function App() {
 
   return (
     <div className="App">
-      <Navbar token={token} setToken={setToken} setUser={setUser}/>
+      <Navbar token={token} setToken={setToken} setUser={setUser} />
       <Routes>
-        <Route path={"/"} element={<Home user={user}/>} />
+        <Route path={"/"} element={<Home user={user} />} />
         <Route path={"/routines"} element={<Routines routines={routines} />} />
-        <Route path={"/routines/:routineId/*"} element={<Routine routines={routines}/>} />
-        <Route path={"/activities"} element={<Activities activities={activities}/>} />
-        <Route path={"/account/login"} element={<Login token={token} setToken={setToken} setUser={setUser}/>} />
-        <Route path={"/account/register"} element={<Register setToken={setToken} setUser={setUser}/>} />
+        <Route
+          path={"/routines/:routineId/*"}
+          element={<Routine routines={routines} />}
+        />
+        <Route
+          path={"/activities"}
+          element={
+            <Activities
+              activities={activities}
+              setActivities={setActivities}
+              token={token}
+            />
+          }
+        />
+        <Route
+          path={"/account/login"}
+          element={
+            <Login token={token} setToken={setToken} setUser={setUser} />
+          }
+        />
+        <Route
+          path={"/account/register"}
+          element={<Register setToken={setToken} setUser={setUser} />}
+        />
+        <Route
+          path={"/account/routines"}
+          element={
+            <MyRoutines
+              routines={routines}
+              setRoutines={setRoutines}
+              token={token}
+            />
+          }
+        />
       </Routes>
     </div>
   );
