@@ -1,9 +1,12 @@
 #myRoutinesMain {
   display: flex;
   flex-direction: column;
-  align-items: center;
   margin-left: 25vw;
   /* background-color: black; */
   height: 94.6vh;
   width: 50vw;
+}
+#myRoutinesMain a:hover {
+  color: black;
+  text-shadow: 0px 0px 5px salmon;
 }

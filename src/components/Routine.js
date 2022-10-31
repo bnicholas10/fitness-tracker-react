@@ -1,31 +1,188 @@
-import { useParams } from "react-router-dom";
-import "./Routine.css"
+import { useState } from "react";
+import { useNavigate, useParams } from "react-router-dom";
+import {
+  editRoutine,
+  fetchRoutines,
+  fetchUserRoutines,
+  deleteRoutine,
+  updateActivity,
+} from "../api";
+import "./Routine.css";
 
 const Routine = (props) => {
-    const {routines} = props
-    const params = useParams()
-    // console.log("ROUTINES: ", routines)
-    const selectedRoutine = routines.filter((routine) => routine.id === +params.routineId)[0];
-    // console.log("SELECTED ROUTINE: ", selectedRoutine)
-    return (
-        <div id="routineMain">
-            <h1>{selectedRoutine.name}</h1>
-            <div id="routineWrapper">
-                <h2>{selectedRoutine.name}</h2>
-                <p>{selectedRoutine.goal}</p>
-                <p>Creator: {selectedRoutine.creatorName}</p>
-                <h2>Activities: </h2>
-              {selectedRoutine.activities.map((activity, i) => (
-                <div className="card" key={i}>
-                  <h3>Name: {activity.name}</h3>
-                  <p>Description: {activity.description}</p>
-                  <p>Duration: {activity.duration}</p>
-                  <p>Count: {activity.count}</p>
-                </div>
-              ))}
-            </div>
-        </div>
-    )   
-}
+  const {
+    routines,
+    setRoutines,
+    user,
+    myRoutines,
+    setMyRoutines,
+    token,
+    activities,
+  } = props;
+  const [editField, setEditField] = useState(false);
+  const [name, setName] = useState("");
+  const [goal, setGoal] = useState("");
+  const [isPublic, setIsPublic] = useState(false);
+  const [error, setError] = useState("");
+  const [duration, setDuration] = useState("");
+  const [count, setCount] = useState("");
+  const params = useParams();
+  const navigate = useNavigate();
+  // console.log("ROUTINES: ", routines)
+  const box = document.querySelector("#checkbox");
+
+  let selectedRoutine = routines.filter(
+    (routine) => routine.id === +params.routineId
+  )[0];
+
+  if (!selectedRoutine) {
+    selectedRoutine = myRoutines.filter(
+      (routine) => routine.id === +params.routineId
+    )[0];
+  }
+
+  const toggleEdit = async (e) => {
+    e.preventDefault();
+    setEditField(!editField);
+  };
+
+  const handleRoutineEdit = async (e) => {
+    if (!user) {
+      return;
+    }
+    e.preventDefault();
+    const routine = await editRoutine(
+      token,
+      params.routineId,
+      name,
+      goal,
+      isPublic
+    );
+    if (routine.error) {
+      setError(routine.error);
+    } else {
+      console.log("PASSED");
+      const updatedRoutines = await fetchRoutines();
+      const myUpdatedRoutines = await fetchUserRoutines(token, user.username);
+      setRoutines(updatedRoutines);
+      setMyRoutines(myUpdatedRoutines);
+      setName("");
+      setGoal("");
+      box.checked = false;
+      setIsPublic(false);
+      setError("");
+    }
+  };
+
+  const handleRoutineDelete = async (e) => {
+    if (!user) {
+      return;
+    }
+    e.preventDefault();
+    const routine = await deleteRoutine(token, params.routineId);
+    console.log("DELETE RESPONSE: ", routine);
+    navigate("../");
+  };
+
+  const handleActivityEdit = async (e) => {
+    e.preventDefault();
+    const activity = await updateActivity(
+      token,
+      activity.routineActivityId,
+      count,
+      duration
+    );
+
+    console.log("UPDATE ACTIVITY RESPONSE: ", activity);
+  };
+
+  console.log("SELECTED ROUTINE: ", selectedRoutine);
+  console.log("ACTIVITIES: ", activities);
+
+  return (
+    <div id="routineMain">
+      <h1>{selectedRoutine.name}</h1>
+      <div id="routineWrapper">
+        <h2>{selectedRoutine.name}</h2>
+        <p>{selectedRoutine.goal}</p>
+        <p>Creator: {selectedRoutine.creatorName}</p>
+        {user && selectedRoutine.creatorId === user.id ? (
+          <div>
+            <button onClick={toggleEdit}>Edit Routine</button>
+            <button onClick={handleRoutineDelete}>Delete Routine</button>
+          </div>
+        ) : (
+          <></>
+        )}
+        {!editField && selectedRoutine.creatorId === user.id ? (
+          <div>
+            <form id="editForm" onSubmit={handleRoutineEdit}>
+              <input
+                placeholder="Name *"
+                value={name}
+                onChange={(e) => setName(e.target.value)}
+              />
+              <input
+                placeholder="Goal *"
+                value={goal}
+                onChange={(e) => setGoal(e.target.value)}
+              />
+              <div id="public">
+                <input
+                  type="checkbox"
+                  id="checkbox"
+                  value={isPublic}
+                  onChange={() => setIsPublic(!isPublic)}
+                />
+                <span>Public</span>
+              </div>
+              <button>Edit</button>
+              <p className="error">{error}</p>
+            </form>
+          </div>
+        ) : (
+          <></>
+        )}
+        <h2>Activities: </h2>
+        {selectedRoutine.activities.map((activity, i) => (
+          <div className="card" key={i}>
+            <h3>Name: {activity.name}</h3>
+            <p>Description: {activity.description}</p>
+            <p>Duration: {activity.duration}</p>
+            <p>Count: {activity.count}</p>
+            {selectedRoutine.creatorId === user.id ? (
+              <div>
+                <form onSubmit={handleActivityEdit}>
+                  <button>Edit</button>
+                  <input
+                    placeholder="Duration *"
+                    value={duration}
+                    onChange={(e) => setDuration(e.target.value)}
+                  />
+                  <input
+                    placeholder="Count *"
+                    value={count}
+                    onChange={(e) => setCount(e.target.value)}
+                  />
+                </form>
+                <button>Delete</button>
+              </div>
+            ) : (
+              <></>
+            )}
+          </div>
+        ))}
+        <form>
+          <select>
+            {activities.map((activity, i) => {
+              <option key={i}>OPTION: {activity.name}</option>;
+            })}
+            <option>TEST</option>
+          </select>
+        </form>
+      </div>
+    </div>
+  );
+};
 
 export default Routine;

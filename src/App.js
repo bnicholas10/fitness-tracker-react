@@ -4,7 +4,12 @@ import Navbar from "./components/Navbar";
 import Home from "./components/Home";
 import Routines from "./components/Routines";
 import Routine from "./components/Routine";
-import { fetchRoutines, fetchActivities } from "./api";
+import {
+  fetchRoutines,
+  fetchActivities,
+  fetchUser,
+  fetchUserRoutines,
+} from "./api";
 import Activities from "./components/Activities";
 import Login from "./components/Login";
 import Register from "./components/Register";
@@ -15,6 +20,7 @@ function App() {
   const [user, setUser] = useState(null);
   const [routines, setRoutines] = useState([]);
   const [activities, setActivities] = useState([]);
+  const [myRoutines, setMyRoutines] = useState([]);
 
   const checkToken = () => {
     if (token === "" && localStorage.getItem("token")) {
@@ -34,9 +40,30 @@ function App() {
     setActivities(activitiesList);
   };
 
+  const handleFetchMyRoutines = async (token, user) => {
+    if (!user) {
+      return;
+    }
+    const routines = await fetchUserRoutines(token, user.username);
+    setMyRoutines(routines);
+  };
+
+  const handleFetchUser = async (token) => {
+    if (token) {
+      const user = await fetchUser(token);
+      setUser(user);
+      // console.log("FETCHED: ", user);
+    } else {
+      setUser(null);
+      // console.log("NO USER");
+    }
+  };
+
   useEffect(() => {
     handleFetchRoutines(token);
+    handleFetchMyRoutines(token, user);
     handleFetchActivities(token);
+    handleFetchUser(token);
   }, [token]);
 
   return (
@@ -47,7 +74,17 @@ function App() {
         <Route path={"/routines"} element={<Routines routines={routines} />} />
         <Route
           path={"/routines/:routineId/*"}
-          element={<Routine routines={routines} />}
+          element={
+            <Routine
+              routines={routines}
+              user={user}
+              myRoutines={myRoutines}
+              token={token}
+              setRoutines={setRoutines}
+              setMyRoutines={setMyRoutines}
+              activities={activities}
+            />
+          }
         />
         <Route
           path={"/activities"}
@@ -73,9 +110,11 @@ function App() {
           path={"/account/routines"}
           element={
             <MyRoutines
-              routines={routines}
               setRoutines={setRoutines}
               token={token}
+              user={user}
+              myRoutines={myRoutines}
+              setMyRoutines={setMyRoutines}
             />
           }
         />
