@@ -174,11 +174,20 @@ const Routine = (props) => {
         ))}
         <form>
           <select>
-            {activities.map((activity, i) => {
-              <option key={i}>OPTION: {activity.name}</option>;
-            })}
-            <option>TEST</option>
+            {activities.map((activity, i) => (
+              <option key={i}>{activity.name}</option>
+            ))}
           </select>
+          <input
+            placeholder="Duration *"
+            value={duration}
+            onChange={(e) => setDuration(e.target.value)}
+          />
+          <input
+            placeholder="Count *"
+            value={count}
+            onChange={(e) => setCount(e.target.value)}
+          />
         </form>
       </div>
     </div>
