@@ -6,6 +6,8 @@ import {
   fetchUserRoutines,
   deleteRoutine,
   updateActivity,
+  deleteActivity,
+  addActivity,
 } from "../api";
 import "./Routine.css";
 
@@ -24,8 +26,11 @@ const Routine = (props) => {
   const [goal, setGoal] = useState("");
   const [isPublic, setIsPublic] = useState(false);
   const [error, setError] = useState("");
-  const [duration, setDuration] = useState("");
-  const [count, setCount] = useState("");
+  const [attachActivityId, setAttachActivityId] = useState("");
+  const [activityEditDuration, setActivityEditDuration] = useState("");
+  const [activityEditCount, setActivityEditCount] = useState("");
+  const [activityAddDuration, setActivityAddDuration] = useState("");
+  const [activityAddCount, setActivityAddCount] = useState("");
   const params = useParams();
   const navigate = useNavigate();
   // console.log("ROUTINES: ", routines)
@@ -84,113 +89,176 @@ const Routine = (props) => {
     navigate("../");
   };
 
-  const handleActivityEdit = async (e) => {
+  const handleActivityEdit = async (e, routineActivityId) => {
     e.preventDefault();
     const activity = await updateActivity(
       token,
-      activity.routineActivityId,
-      count,
-      duration
+      routineActivityId,
+      activityEditCount,
+      activityEditDuration
     );
-
-    console.log("UPDATE ACTIVITY RESPONSE: ", activity);
+    if (activity.error) {
+      setError(activity.error);
+    } else {
+      const updatedRoutines = await fetchRoutines();
+      const myUpdatedRoutines = await fetchUserRoutines(token, user.username);
+      setRoutines(updatedRoutines);
+      setMyRoutines(myUpdatedRoutines);
+      setActivityEditDuration("");
+      setActivityEditCount("");
+      setError("");
+    }
   };
 
-  console.log("SELECTED ROUTINE: ", selectedRoutine);
-  console.log("ACTIVITIES: ", activities);
+  const handleActivityDelete = async (e, routineActivityId) => {
+    e.preventDefault();
+    const activity = await deleteActivity(token, routineActivityId);
+    if (activity.error) {
+      setError(activity.error);
+    } else {
+      const updatedRoutines = await fetchRoutines();
+      const myUpdatedRoutines = await fetchUserRoutines(token, user.username);
+      setRoutines(updatedRoutines);
+      setMyRoutines(myUpdatedRoutines);
+      setError("");
+    }
+  };
+
+  const handleAddActivity = async (e) => {
+    e.preventDefault();
+    const activity = await addActivity(
+      token,
+      params.routineId,
+      attachActivityId,
+      activityAddCount,
+      activityAddDuration
+    );
+    if (activity.error) {
+      setError(activity.error);
+    } else {
+      const updatedRoutines = await fetchRoutines();
+      const myUpdatedRoutines = await fetchUserRoutines(token, user.username);
+      setRoutines(updatedRoutines);
+      setMyRoutines(myUpdatedRoutines);
+      setActivityAddDuration("");
+      setActivityAddCount("");
+      setError("");
+    }
+  };
+  // console.log("SELECTED ROUTINE: ", selectedRoutine);
+  // console.log("ACTIVITIES: ", activities);
 
   return (
-    <div id="routineMain">
-      <h1>{selectedRoutine.name}</h1>
-      <div id="routineWrapper">
-        <h2>{selectedRoutine.name}</h2>
-        <p>{selectedRoutine.goal}</p>
-        <p>Creator: {selectedRoutine.creatorName}</p>
-        {user && selectedRoutine.creatorId === user.id ? (
-          <div>
-            <button onClick={toggleEdit}>Edit Routine</button>
-            <button onClick={handleRoutineDelete}>Delete Routine</button>
-          </div>
-        ) : (
-          <></>
-        )}
-        {!editField && selectedRoutine.creatorId === user.id ? (
-          <div>
-            <form id="editForm" onSubmit={handleRoutineEdit}>
-              <input
-                placeholder="Name *"
-                value={name}
-                onChange={(e) => setName(e.target.value)}
-              />
-              <input
-                placeholder="Goal *"
-                value={goal}
-                onChange={(e) => setGoal(e.target.value)}
-              />
-              <div id="public">
+    selectedRoutine && (
+      <div id="routineMain">
+        <h1>{selectedRoutine.name}</h1>
+        <div id="routineWrapper">
+          <h2>{selectedRoutine.name}</h2>
+          <p>{selectedRoutine.goal}</p>
+          <p>Creator: {selectedRoutine.creatorName}</p>
+          {user && selectedRoutine.creatorId === user.id ? (
+            <div>
+              <button onClick={toggleEdit}>Edit Routine</button>
+              <button onClick={handleRoutineDelete}>Delete Routine</button>
+            </div>
+          ) : (
+            <></>
+          )}
+          {user && !editField && selectedRoutine.creatorId === user.id ? (
+            <div>
+              <form id="editForm" onSubmit={handleRoutineEdit}>
                 <input
-                  type="checkbox"
-                  id="checkbox"
-                  value={isPublic}
-                  onChange={() => setIsPublic(!isPublic)}
+                  placeholder="Name *"
+                  value={name}
+                  onChange={(e) => setName(e.target.value)}
                 />
-                <span>Public</span>
-              </div>
-              <button>Edit</button>
-              <p className="error">{error}</p>
-            </form>
-          </div>
-        ) : (
-          <></>
-        )}
-        <h2>Activities: </h2>
-        {selectedRoutine.activities.map((activity, i) => (
-          <div className="card" key={i}>
-            <h3>Name: {activity.name}</h3>
-            <p>Description: {activity.description}</p>
-            <p>Duration: {activity.duration}</p>
-            <p>Count: {activity.count}</p>
-            {selectedRoutine.creatorId === user.id ? (
-              <div>
-                <form onSubmit={handleActivityEdit}>
-                  <button>Edit</button>
+                <input
+                  placeholder="Goal *"
+                  value={goal}
+                  onChange={(e) => setGoal(e.target.value)}
+                />
+                <div id="public">
                   <input
-                    placeholder="Duration *"
-                    value={duration}
-                    onChange={(e) => setDuration(e.target.value)}
+                    type="checkbox"
+                    id="checkbox"
+                    value={isPublic}
+                    onChange={() => setIsPublic(!isPublic)}
                   />
-                  <input
-                    placeholder="Count *"
-                    value={count}
-                    onChange={(e) => setCount(e.target.value)}
-                  />
-                </form>
-                <button>Delete</button>
-              </div>
-            ) : (
-              <></>
-            )}
-          </div>
-        ))}
-        <form>
-          <select>
-            {activities.map((activity, i) => (
-              <option key={i}>{activity.name}</option>
-            ))}
-          </select>
-          <input
-            placeholder="Duration *"
-            value={duration}
-            onChange={(e) => setDuration(e.target.value)}
-          />
-          <input
-            placeholder="Count *"
-            value={count}
-            onChange={(e) => setCount(e.target.value)}
-          />
-        </form>
+                  <span>Public</span>
+                </div>
+                <button>Edit</button>
+                <p className="error">{error}</p>
+              </form>
+            </div>
+          ) : (
+            <></>
+          )}
+          <h2>Activities: </h2>
+          {selectedRoutine.activities.map((activity, i) => (
+            <div className="card" key={i}>
+              <h3>Name: {activity.name}</h3>
+              <p>Description: {activity.description}</p>
+              <p>Duration: {activity.duration}</p>
+              <p>Count: {activity.count}</p>
+              {user && selectedRoutine.creatorId === user.id ? (
+                <div>
+                  <form>
+                    <button
+                      onClick={(e) => {
+                        handleActivityEdit(e, activity.routineActivityId);
+                      }}
+                    >
+                      Edit
+                    </button>
+                    <input
+                      placeholder="Duration *"
+                      onChange={(e) => setActivityEditDuration(e.target.value)}
+                    />
+                    <input
+                      placeholder="Count *"
+                      onChange={(e) => setActivityEditCount(e.target.value)}
+                    />
+                  </form>
+                  <button
+                    onClick={(e) => {
+                      handleActivityDelete(e, activity.routineActivityId);
+                    }}
+                  >
+                    Delete
+                  </button>
+                </div>
+              ) : (
+                <></>
+              )}
+            </div>
+          ))}
+          <form id="addForm" onSubmit={handleAddActivity}>
+            <select
+              onChange={(event) => {
+                setAttachActivityId(event.target.value);
+              }}
+            >
+              {activities.map((activity, i) => (
+                <option key={i} value={activity.id}>
+                  {activity.name}
+                </option>
+              ))}
+            </select>
+            <input
+              placeholder="Duration *"
+              value={activityAddDuration}
+              onChange={(e) => setActivityAddDuration(e.target.value)}
+            />
+            <input
+              placeholder="Count *"
+              value={activityAddCount}
+              onChange={(e) => setActivityAddCount(e.target.value)}
+            />
+            <button>Attach</button>
+          </form>
+        </div>
       </div>
-    </div>
+    )
   );
 };
 

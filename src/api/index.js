@@ -238,3 +238,33 @@ export const deleteActivity = async (token, routineActivityId) => {
     console.error(error);
   }
 };
+
+export const addActivity = async (
+  token,
+  routineId,
+  activityId,
+  count,
+  duration
+) => {
+  try {
+    const response = await fetch(
+      `${BASE_URL}/routines/${routineId}/activities`,
+      {
+        method: "POST",
+        headers: {
+          "Content-Type": "application/json",
+          Authorization: `Bearer ${token}`,
+        },
+        body: JSON.stringify({
+          activityId,
+          count,
+          duration,
+        }),
+      }
+    );
+    const result = await response.json();
+    return result;
+  } catch (error) {
+    console.error(error);
+  }
+};
