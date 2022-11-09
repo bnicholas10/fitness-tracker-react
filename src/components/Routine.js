@@ -164,7 +164,7 @@ const Routine = (props) => {
           ) : (
             <></>
           )}
-          {user && !editField && selectedRoutine.creatorId === user.id ? (
+          {user && editField && selectedRoutine.creatorId === user.id ? (
             <div>
               <form id="editForm" onSubmit={handleRoutineEdit}>
                 <input
@@ -232,30 +232,34 @@ const Routine = (props) => {
               )}
             </div>
           ))}
-          <form id="addForm" onSubmit={handleAddActivity}>
-            <select
-              onChange={(event) => {
-                setAttachActivityId(event.target.value);
-              }}
-            >
-              {activities.map((activity, i) => (
-                <option key={i} value={activity.id}>
-                  {activity.name}
-                </option>
-              ))}
-            </select>
-            <input
-              placeholder="Duration *"
-              value={activityAddDuration}
-              onChange={(e) => setActivityAddDuration(e.target.value)}
-            />
-            <input
-              placeholder="Count *"
-              value={activityAddCount}
-              onChange={(e) => setActivityAddCount(e.target.value)}
-            />
-            <button>Attach</button>
-          </form>
+          {user && selectedRoutine.creatorId === user.id ? (
+            <form id="addForm" onSubmit={handleAddActivity}>
+              <select
+                onChange={(event) => {
+                  setAttachActivityId(event.target.value);
+                }}
+              >
+                {activities.map((activity, i) => (
+                  <option key={i} value={activity.id}>
+                    {activity.name}
+                  </option>
+                ))}
+              </select>
+              <input
+                placeholder="Duration *"
+                value={activityAddDuration}
+                onChange={(e) => setActivityAddDuration(e.target.value)}
+              />
+              <input
+                placeholder="Count *"
+                value={activityAddCount}
+                onChange={(e) => setActivityAddCount(e.target.value)}
+              />
+              <button>Attach</button>
+            </form>
+          ) : (
+            <></>
+          )}
         </div>
       </div>
     )

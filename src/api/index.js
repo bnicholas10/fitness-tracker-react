@@ -1,8 +1,8 @@
-export const BASE_URL = "http://fitnesstrac-kr.herokuapp.com/api/";
+export const BASE_URL = "https://fitnesstrac-kr.herokuapp.com/api/";
 
 export const fetchRoutines = async (token) => {
   try {
-    const url = `${BASE_URL}/routines`;
+    const url = `${BASE_URL}routines`;
 
     const response = await fetch(url, {
       headers: token
@@ -23,7 +23,7 @@ export const fetchRoutines = async (token) => {
 
 export const fetchActivities = async (token) => {
   try {
-    const url = `${BASE_URL}/activities`;
+    const url = `${BASE_URL}activities`;
 
     const response = await fetch(url, {
       headers: token
@@ -64,7 +64,7 @@ export const registerUser = async (username, password) => {
 
 export const loginUser = async (username, password) => {
   try {
-    const response = await fetch(`${BASE_URL}/users/login`, {
+    const response = await fetch(`${BASE_URL}users/login`, {
       method: "POST",
       headers: {
         "Content-Type": "application/json",
@@ -83,7 +83,7 @@ export const loginUser = async (username, password) => {
 
 export const createActivity = async (token, name, description) => {
   try {
-    const response = await fetch(`${BASE_URL}/activities`, {
+    const response = await fetch(`${BASE_URL}activities`, {
       method: "POST",
       headers: {
         "Content-Type": "application/json",
@@ -103,7 +103,7 @@ export const createActivity = async (token, name, description) => {
 
 export const createRoutine = async (token, name, goal, isPublic) => {
   try {
-    const response = await fetch(`${BASE_URL}/routines`, {
+    const response = await fetch(`${BASE_URL}routines`, {
       method: "POST",
       headers: {
         "Content-Type": "application/json",
@@ -124,7 +124,7 @@ export const createRoutine = async (token, name, goal, isPublic) => {
 
 export const fetchUser = async (token) => {
   try {
-    const response = await fetch(`${BASE_URL}/users/me`, {
+    const response = await fetch(`${BASE_URL}users/me`, {
       headers: {
         "Content-Type": "application/json",
         Authorization: `Bearer ${token}`,
@@ -140,7 +140,7 @@ export const fetchUser = async (token) => {
 
 export const fetchUserRoutines = async (token, username) => {
   try {
-    const response = await fetch(`${BASE_URL}/users/${username}/routines`, {
+    const response = await fetch(`${BASE_URL}users/${username}/routines`, {
       headers: token
         ? {
             "Content-Type": "application/json",
@@ -157,7 +157,7 @@ export const fetchUserRoutines = async (token, username) => {
 
 export const editRoutine = async (token, routineId, name, goal, isPublic) => {
   try {
-    const response = await fetch(`${BASE_URL}/routines/${routineId}`, {
+    const response = await fetch(`${BASE_URL}routines/${routineId}`, {
       method: "PATCH",
       headers: {
         "Content-Type": "application/json",
@@ -178,7 +178,7 @@ export const editRoutine = async (token, routineId, name, goal, isPublic) => {
 
 export const deleteRoutine = async (token, routineId) => {
   try {
-    const response = await fetch(`${BASE_URL}/routines/${routineId}`, {
+    const response = await fetch(`${BASE_URL}routines/${routineId}`, {
       method: "DELETE",
       headers: {
         "Content-Type": "application/json",
@@ -200,7 +200,7 @@ export const updateActivity = async (
 ) => {
   try {
     const response = await fetch(
-      `${BASE_URL}/routine_activities/${routineActivityId}`,
+      `${BASE_URL}routine_activities/${routineActivityId}`,
       {
         method: "PATCH",
         headers: {
@@ -223,7 +223,7 @@ export const updateActivity = async (
 export const deleteActivity = async (token, routineActivityId) => {
   try {
     const response = await fetch(
-      `${BASE_URL}/routine_activities/${routineActivityId}`,
+      `${BASE_URL}routine_activities/${routineActivityId}`,
       {
         method: "DELETE",
         headers: {
@@ -248,7 +248,7 @@ export const addActivity = async (
 ) => {
   try {
     const response = await fetch(
-      `${BASE_URL}/routines/${routineId}/activities`,
+      `${BASE_URL}routines/${routineId}/activities`,
       {
         method: "POST",
         headers: {
